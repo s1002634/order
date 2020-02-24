@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="/static/plugin/jQuery/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/index.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <title>orders</title>
+</head>
+<body>
+    <main id="app">
+        <article>
+            <h1>進行中</h1>
+            <ol id="Ingol">
+                <li v-if="item.status.code == 1 ||item.status.code == 2" v-for="(item, index) in list">
+                    <a href="">
+                        <img :src= 'item.logo'  alt="">
+                        <div>
+                            <section>
+                                <div>
+                                    <h6 class="green">${ item.status.type }</h6>
+                                    <span>預計出貨 : ${ item.date }</span>
+                                </div>
+                                <h2>${ item.name }</h2>
+                                
+                            </section>
+                        </div>
+                    </a>
+                </li>
+            </ol>
+        </article>
+        <article class="overBlock">
+            <h1>已完成</h1>
+            <ol id="Compeleteol">
+                <li v-if="item.status.code == 3 ||item.status.code == 4" v-for="(item, index) in list">
+                    <a href="">
+                        <img :src= 'item.logo'  alt="">
+                        <div>
+                            <section>
+                                <div>
+                                    <h6>${ item.status.type }</h6>
+                                </div>
+                                <h2>${ item.name }</h2>
+                            </section>
+                        </div>
+                    </a>
+                </li>
+            </ol>
+        </article>
+    </main>
+</body>
+ 
+<script>
+
+    $(document).ready(function(){
+        //取資料
+        $.post("/order_page/",{csrfmiddlewaretoken: '{{ csrf_token }}'},function(res){
+            const activities = res.orders
+            //日期排序
+            const sortedActivities = activities.slice().sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+            //Vue Layout
+            var vm = new Vue({
+                el: '#app',
+                delimiters: ['${', '}'],
+                data: {
+                    list: sortedActivities,
+                },
+            });
+
+        })
+    })
+</script>
+</html>

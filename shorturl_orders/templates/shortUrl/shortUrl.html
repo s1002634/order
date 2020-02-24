@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="/static/plugin/jQuery/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/defaule.css">
+    <title>短url</title>
+</head>
+<body>
+    <div class="form-group" style="text-align: center;    padding: 10px 15px 25px;    margin-top: 15px;">
+        <label for="longUrl" class="sr-only">原網址</label>
+        <input type="text" class="form-control" id="longUrl" placeholder="輸入網址">
+        <br>
+        <button type="button" class="btn btn-primary" id="redirect">導向短網址</button>
+    </div>
+</body>
+ 
+<script>
+    $("#redirect").click(function () {
+        $.ajax({
+            url: "/short_url_page/",
+            type: "post",
+            data: {"longUrl":$("#longUrl").val(),"csrfmiddlewaretoken":"{{ csrf_token }}"},
+            success: function (data) {
+                if (data.status == 1) {
+                    alert('請複製:'+location.host+"/"+data.info)
+                } else {
+                    alert(data.info);
+                }
+            }
+ 
+        })
+    });
+</script>
+</html>
